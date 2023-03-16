@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const service = axios.create({
-  baseURL: 'http://localhost:8082',
+  baseURL: 'http://localhost:8080',
   timeout: 5000
 })
 
@@ -78,5 +78,5 @@ export function execute(job) {
     url: '/api/v1/execute',
     method: 'get',
     params: { job }
-  })  
+  })
 }

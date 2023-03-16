@@ -1,13 +1,15 @@
 package cron_admin
 
 import (
+	"embed"
 	"io/fs"
 	"net/http"
-
-	"github.com/yinyajun/cron-admin/ui"
 )
 
+//go:embed ui/dist/*
+var files embed.FS
+
 func UIHandler() http.Handler {
-	staticFS, _ := fs.Sub(ui.StaticFiles, "dist")
+	staticFS, _ := fs.Sub(files, "ui/dist")
 	return http.FileServer(http.FS(staticFS))
 }

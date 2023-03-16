@@ -1,10 +1,11 @@
-package main
+package cron_admin
 
 import (
 	"embed"
-	"html/template"
 	"net/http"
 )
+
+import "html/template"
 
 //go:embed ui/dist/*
 var dist embed.FS

@@ -1,4 +1,4 @@
-package cron_admin
+package admin
 
 import (
 	"embed"

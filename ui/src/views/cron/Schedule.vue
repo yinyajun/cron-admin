@@ -1,6 +1,4 @@
 <template>
-
-
   <el-container>
     <el-header>
       <el-row :gutter="10">
@@ -13,31 +11,26 @@
         </el-col>
       </el-row>
 
-
       <el-dialog title="Add job schedule" :visible.sync="dialogFormVisible">
         <el-form :model="addForm" label-width="50px">
 
           <el-form-item label="Job">
             <el-select v-model="addForm.job" filterable remote placeholder="Please enter a job"
-              :remote-method="remoteMethod" :loading="loading" style="display:block">
+              :remote-method="optionalJobs" :loading="loading" style="display:block">
               <el-option v-for="item in options" :label="item" :value="item" :key="item">
               </el-option>
             </el-select>
           </el-form-item>
-
           <el-form-item label="Spec">
             <el-input v-model="addForm.spec" autocomplete="off" placeholder="@every 30s"></el-input>
           </el-form-item>
-
         </el-form>
 
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">cancel</el-button>
           <el-button type="primary" @click="onSubmit">confirm</el-button>
         </div>
-
       </el-dialog>
-
     </el-header>
 
     <el-main>
@@ -115,41 +108,38 @@
       }
     },
     created() {
-      this.fetchSchedule()
-      this.fetchJobs()
+      Promise.all([schedule(), jobs()]).then(resp => {
+        this.events = resp[0].data
+        this.jobs = resp[1].data
+      }).catch(err => {
+        this.$message.error(err);
+      })
     },
+
     methods: {
 
-      // fetch schedule
       fetchSchedule() {
         schedule().then(resp => {
           this.events = resp.data
         })
       },
 
-      //
-      fetchJobs() {
-        jobs().then(resp => {
-          this.jobs = resp.data
-        })
-      },
 
-      // toggle job status
       toggleJobStatus(row) {
         if (row.displayed) {
           active(row.name).catch((err) => {
             row.displayed = false
-            this.$message.warning(err);
+            this.$message.error(err);
           })
         } else {
           pause(row.name).catch((err) => {
             row.displayed = true
-            this.$message.warning(err);
+            this.$message.error(err);
           })
         }
       },
 
-      // remove job
+
       removeJob(index, row) {
         this.$confirm('This will permanently delete the job ' + row.name + ', continue?', 'Warning', {
           confirmButtonText: 'OK',
@@ -160,12 +150,12 @@
             this.events.splice(index, 1);
             this.$message.success('Delete completed');
           }).catch((err) => {
-            this.$message.warning(err);
+            this.$message.error(err);
           })
         }).catch(() => {})
       },
 
-      // execute
+
       execute(row) {
         this.$confirm('This will immediately run the job ' + row.name + ', continue?', 'Info', {
           confirmButtonText: 'OK',
@@ -175,13 +165,13 @@
           execute(row.name).then(() => {
             this.$message.success('Run completed')
           }).catch((err) => {
-            this.$message.warning(err)
+            this.$message.error(err)
           })
         }).catch(() => {})
       },
 
-      // remote
-      remoteMethod(query) {
+
+      optionalJobs(query) {
         if (query !== '') {
           this.loading = true;
           setTimeout(() => {
@@ -194,23 +184,19 @@
           this.options = [];
         }
       },
-      isSubString: (item, query) => {
-        return !query || item.toLowerCase().includes(query.toLowerCase())
-      },
-      // submit
+
+      isSubString: (item, query) => !query || item.toLowerCase().includes(query.toLowerCase()),
+
+
       onSubmit() {
         this.dialogFormVisible = false
         add(this.addForm.spec, this.addForm.job).then(() => {
           this.$message.success("add completed")
           this.fetchSchedule()
         }).catch((err) => {
-          this.$message.warning(err)
+          this.$message.error(err)
         })
       }
-      
-      // 
-      
-
 
     }
   }

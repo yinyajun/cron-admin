@@ -46,6 +46,8 @@
       fetchRunning() {
         running().then(resp => {
           this.executions = resp.data
+        }).catch((err) => {
+          this.$message.error(err);
         })
       }
     }

@@ -1,12 +1,9 @@
 <template>
   <el-container>
-
     <el-main>
-
       <el-row :gutter="10">
         <el-col :xs="{span:22, offset:1}" :sm="{span:20, offset:2}" :md="{span:18, offset:3}" :lg="{span:14, offset:5}"
           :xl="{span:8, offset:8}">
-
           <el-table :data="executions" stripe style="width: 100%">
             <template slot="empty">
               <el-empty :image-size="100" description='No Data'></el-empty>
@@ -21,7 +18,6 @@
                     style="color: green;font-size: 1.5rem;"></i></span>
                 <span v-else> <i class="el-icon-error" style="color: red;font-size: 1.5rem;"></i> </span>
               </template>
-
             </el-table-column>
             <el-table-column type="expand">
               <template slot-scope="scope">
@@ -33,10 +29,8 @@
               </template>
             </el-table-column>
           </el-table>
-
         </el-col>
       </el-row>
-
     </el-main>
   </el-container>
 </template>
@@ -62,6 +56,8 @@
       fetchHistory(job) {
         history(job).then(resp => {
           this.executions = resp.data
+        }).catch((err) => {
+          this.$message.error(err);
         })
       }
     }

@@ -5,7 +5,7 @@ import {
 } from 'element-ui'
 
 const service = axios.create({
-  baseURL: "./api",
+  baseURL: "http://localhost:8080/api",
   timeout: 3000
 })
 
@@ -62,11 +62,15 @@ export function add(spec, job) {
 
 
 export function history(job) {
+  const offset = 0
+  const size =100
   return service({
     url: '/v1/history',
     method: 'get',
     params: {
-      job
+      job,
+      offset,
+      size
     }
   })
 }

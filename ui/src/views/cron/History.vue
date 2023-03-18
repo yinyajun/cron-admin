@@ -38,7 +38,7 @@
 
             <el-table-column type="expand" width=80>
               <template slot-scope="scope">
-                <el-form v-if="scope.row.finished_at !== 0"  label-position="left" block class="table-expand">
+                <el-form v-if="scope.row.finished_at !== 0" label-position="left" block class="table-expand">
                   <el-form-item label="consume:"><span> {{consumeFormatter(scope.row)}} </span> </el-form-item>
                   <el-form-item label="result:"><span>{{scope.row.result}} </span> </el-form-item>
                 </el-form>
@@ -48,6 +48,15 @@
         </el-col>
       </el-row>
     </el-main>
+    <el-footer>
+      <el-row :gutter="10">
+        <el-col :xs="{span:22, offset:1}" :sm="{span:20, offset:2}" :md="{span:18, offset:3}" :lg="{span:14, offset:5}"
+          :xl="{span:8, offset:8}">
+          <!-- pagination -->
+        </el-col>
+      </el-row>
+    </el-footer>
+
   </el-container>
 </template>
 
@@ -73,7 +82,7 @@
     methods: {
       fetchHistory(job) {
         history(job).then(resp => {
-          this.executions = resp.data
+          this.executions = resp.data.executions
         }).catch((err) => {
           this.$message.error(err);
         })

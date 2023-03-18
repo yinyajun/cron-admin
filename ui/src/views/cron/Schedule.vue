@@ -48,9 +48,9 @@
                 </router-link>
               </template>
             </el-table-column>
-            <el-table-column label="Next Execution" prop="next" sortable> </el-table-column>
+            <el-table-column label="Next Execution" prop="next" :formatter="timeFormatter" sortable> </el-table-column>
             <el-table-column label="Spec" prop="spec"> </el-table-column>
-            <el-table-column label="Status" width="100">
+            <el-table-column label="Status">
               <template slot-scope="scope">
                 <el-switch v-model="scope.row.displayed" @change="toggleJobStatus(scope.row)">
                 </el-switch>
@@ -88,6 +88,10 @@
     jobs
   } from '../../api/cron';
 
+  import {
+    timestampToTime
+  } from '../../util/time';
+
 
   export default {
     data() {
@@ -95,12 +99,10 @@
         events: [],
         jobs: [],
 
-        activeIndex: '/schedule',
         search: '',
         dialogFormVisible: false,
         options: [],
         loading: false,
-
         addForm: {
           job: '',
           spec: ''
@@ -124,7 +126,6 @@
         })
       },
 
-
       toggleJobStatus(row) {
         if (row.displayed) {
           active(row.name).catch((err) => {
@@ -139,9 +140,8 @@
         }
       },
 
-
       removeJob(index, row) {
-        this.$confirm('This will permanently delete the job ' + row.name + ', continue?', 'Warning', {
+        this.$confirm('This will permanently remove the job ' + row.name + ', continue?', 'Warning', {
           confirmButtonText: 'OK',
           cancelButtonText: 'cancel',
           type: 'warning'
@@ -154,7 +154,6 @@
           })
         }).catch(() => {})
       },
-
 
       execute(row) {
         this.$confirm('This will immediately run the job ' + row.name + ', continue?', 'Info', {
@@ -169,7 +168,6 @@
           })
         }).catch(() => {})
       },
-
 
       optionalJobs(query) {
         if (query !== '') {
@@ -187,7 +185,6 @@
 
       isSubString: (item, query) => !query || item.toLowerCase().includes(query.toLowerCase()),
 
-
       onSubmit() {
         this.dialogFormVisible = false
         add(this.addForm.spec, this.addForm.job).then(() => {
@@ -196,7 +193,9 @@
         }).catch((err) => {
           this.$message.error(err)
         })
-      }
+      },
+
+      timeFormatter: (row, col, value, idx) => timestampToTime(value)
 
     }
   }

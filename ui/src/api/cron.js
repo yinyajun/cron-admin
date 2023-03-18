@@ -5,13 +5,13 @@ import {
 } from 'element-ui'
 
 const service = axios.create({
-  baseURL: "./",
+  baseURL: "./api",
   timeout: 3000
 })
 
 export function schedule() {
   return service({
-    url: '/api/v1/schedule',
+    url: '/v1/schedule',
     method: 'get'
   })
 }
@@ -19,7 +19,7 @@ export function schedule() {
 
 export function active(job) {
   return service({
-    url: '/api/v1/active',
+    url: '/v1/active',
     method: 'get',
     params: {
       job
@@ -30,7 +30,7 @@ export function active(job) {
 
 export function pause(job) {
   return service({
-    url: '/api/v1/pause',
+    url: '/v1/pause',
     method: 'get',
     params: {
       job
@@ -40,7 +40,7 @@ export function pause(job) {
 
 export function remove(job) {
   return service({
-    url: '/api/v1/remove',
+    url: '/v1/remove',
     method: 'get',
     params: {
       job
@@ -51,7 +51,7 @@ export function remove(job) {
 
 export function add(spec, job) {
   return service({
-    url: '/api/v1/add',
+    url: '/v1/add',
     method: 'get',
     params: {
       spec,
@@ -63,7 +63,7 @@ export function add(spec, job) {
 
 export function history(job) {
   return service({
-    url: '/api/v1/history',
+    url: '/v1/history',
     method: 'get',
     params: {
       job
@@ -74,14 +74,21 @@ export function history(job) {
 
 export function jobs() {
   return service({
-    url: '/api/v1/jobs',
+    url: '/v1/jobs',
+    method: 'get'
+  })
+}
+
+export function members() {
+  return service({
+    url: '/v1/members',
     method: 'get'
   })
 }
 
 export function running() {
   return service({
-    url: '/api/v1/running',
+    url: '/v1/running',
     method: 'get'
   })
 }
@@ -89,7 +96,7 @@ export function running() {
 
 export function execute(job) {
   return service({
-    url: '/api/v1/execute',
+    url: '/v1/execute',
     method: 'get',
     params: {
       job

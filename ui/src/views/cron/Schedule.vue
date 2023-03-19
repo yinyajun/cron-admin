@@ -11,12 +11,12 @@
         </el-col>
       </el-row>
 
-      <el-dialog title="Add job schedule" :visible.sync="dialogFormVisible">
+      <el-dialog title="New schedule" :visible.sync="dialogFormVisible">
         <el-form :model="addForm" label-width="50px">
 
           <el-form-item label="Job">
             <el-select v-model="addForm.job" filterable remote placeholder="Please enter a job"
-              :remote-method="optionalJobs" :loading="loading" style="display:block">
+              :remote-method="optionalJobs" :loading="formLoading" style="display:block">
               <el-option v-for="item in options" :label="item" :value="item" :key="item">
               </el-option>
             </el-select>
@@ -37,7 +37,7 @@
       <el-row :gutter="10">
         <el-col :xs="{span:22, offset:1}" :sm="{span:20, offset:2}" :md="{span:18, offset:3}" :lg="{span:14, offset:5}"
           :xl="{span:8, offset:8}">
-          <el-table :data="events.filter(data => isSubString(data.name ,search) )" stripe style="width: 100%">
+          <el-table :data="events.filter(data => isSubString(data.name ,search) )" v-loading="tableLoading" stripe style="width: 100%">
             <template slot="empty">
               <el-empty :image-size="100" description='No Data'></el-empty>
             </template>
@@ -102,7 +102,8 @@
         search: '',
         dialogFormVisible: false,
         options: [],
-        loading: false,
+        tableLoading: true,
+        formLoading: false,
         addForm: {
           job: '',
           spec: ''
@@ -113,6 +114,7 @@
       Promise.all([schedule(), jobs()]).then(resp => {
         this.events = resp[0].data
         this.jobs = resp[1].data
+        this.tableLoading = false
       }).catch(err => {
         this.$message.error(err);
       })
@@ -171,9 +173,9 @@
 
       optionalJobs(query) {
         if (query !== '') {
-          this.loading = true;
+          this.formLoading = true;
           setTimeout(() => {
-            this.loading = false;
+            this.formLoading = false;
             this.options = this.jobs.filter(item => {
               return this.isSubString(item, query)
             });

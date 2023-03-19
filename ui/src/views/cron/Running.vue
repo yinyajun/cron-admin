@@ -4,7 +4,7 @@
       <el-row :gutter="10">
         <el-col :xs="{span:22, offset:1}" :sm="{span:20, offset:2}" :md="{span:18, offset:3}" :lg="{span:14, offset:5}"
           :xl="{span:8, offset:8}">
-          <el-table :data="executions" stripe>
+          <el-table :data="executions" v-loading="tableLoading" stripe>
             <template slot="empty">
               <el-empty :image-size="100" description='No Data'></el-empty>
             </template>
@@ -39,7 +39,8 @@
   export default {
     data() {
       return {
-        executions: []
+        executions: [],
+        tableLoading: true
       }
     },
 
@@ -51,6 +52,7 @@
       fetchRunning() {
         running().then(resp => {
           this.executions = resp.data
+          this.tableLoading = false
         }).catch((err) => {
           this.$message.error(err);
         })

@@ -5,7 +5,7 @@ import {
 } from 'element-ui'
 
 const service = axios.create({
-  baseURL: "http://localhost:8080/api",
+  baseURL: "./api",
   timeout: 3000
 })
 
